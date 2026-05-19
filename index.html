@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="A personal portfolio starter for projects, skills, writing, and contact links."
+      content="SirTaxu portfolio: videogame design, software development, bioinformatics tools, bots, scripts, and automation."
     />
-    <title>SirTaxu | Portfolio</title>
+    <title>SirTaxu | Game Developer, Tool Builder, Automation Designer</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="logo" href="#top" aria-label="Home">ST</a>
       <nav class="nav" aria-label="Primary navigation">
+        <a href="#focus">Focus</a>
         <a href="#projects">Projects</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
@@ -23,64 +24,109 @@
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Personal portfolio</p>
-          <h1 id="hero-title">Hi, I’m SirTaxu.</h1>
+          <p class="eyebrow">Game systems / Bioinformatics tools / Automation</p>
+          <h1 id="hero-title">SirTaxu builds systems that play, analyze, and optimize.</h1>
           <p class="hero-text">
-            I build useful things, learn in public, and collect the work I am
-            proud of here.
+            Videogame designer and developer, programmer of bioinformatics tools,
+            and creator of bots and scripts for repetitive, data-heavy, or game-adjacent
+            workflows.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#projects">View projects</a>
-            <a class="button secondary" href="mailto:you@example.com">Email me</a>
+            <a class="button primary" href="#projects">View work</a>
+            <a class="button secondary" href="https://github.com/SirTaxu">GitHub</a>
           </div>
         </div>
-        <div class="hero-panel" aria-label="Portfolio highlights">
-          <div>
-            <span class="metric">3</span>
-            <span class="metric-label">Projects to feature</span>
+
+        <aside class="console-panel" aria-label="Portfolio summary">
+          <div class="console-bar">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-          <div>
-            <span class="metric">2026</span>
-            <span class="metric-label">Portfolio launched</span>
-          </div>
+          <pre><code>profile.load("SirTaxu")
+
+roles = [
+  "videogame designer",
+  "gameplay programmer",
+  "bioinformatics tool builder",
+  "automation script designer"
+]
+
+mode = "prototype, iterate, optimize"</code></pre>
+        </aside>
+      </section>
+
+      <section class="section focus" id="focus" aria-labelledby="focus-title">
+        <div class="section-heading">
+          <p class="eyebrow">Core focus</p>
+          <h2 id="focus-title">Three areas, one way of thinking.</h2>
+        </div>
+
+        <div class="focus-grid">
+          <article class="focus-card">
+            <span class="card-index">01</span>
+            <h3>Videogame Design & Development</h3>
+            <p>
+              Systems-first design, gameplay prototypes, mechanics, progression,
+              balancing, and tools that make iteration faster.
+            </p>
+          </article>
+
+          <article class="focus-card">
+            <span class="card-index">02</span>
+            <h3>Bioinformatics Tools</h3>
+            <p>
+              Practical software for biological data workflows: parsing, analysis,
+              repeatable pipelines, visualization, and quality-of-life utilities.
+            </p>
+          </article>
+
+          <article class="focus-card">
+            <span class="card-index">03</span>
+            <h3>Bots, Scripts & Automation</h3>
+            <p>
+              Task optimization for games, tools, and personal workflows through
+              careful scripting, state detection, and repeatable automation.
+            </p>
+          </article>
         </div>
       </section>
 
       <section class="section" id="projects" aria-labelledby="projects-title">
         <div class="section-heading">
-          <p class="eyebrow">Work</p>
-          <h2 id="projects-title">Featured projects</h2>
+          <p class="eyebrow">Selected work</p>
+          <h2 id="projects-title">Projects to shape into case studies.</h2>
         </div>
 
         <div class="project-grid">
           <article class="project-card">
-            <p class="project-type">Web app</p>
-            <h3>Project One</h3>
+            <p class="project-type">Game development</p>
+            <h3>Game Systems & Prototypes</h3>
             <p>
-              Replace this with a short summary of what you built, who it helps,
-              and what makes it interesting.
+              A space for playable prototypes, mechanics experiments, level systems,
+              Unity tools, design documents, and gameplay programming work.
             </p>
-            <a href="#" aria-label="Open Project One">Project link</a>
+            <a href="https://github.com/SirTaxu">Browse GitHub</a>
           </article>
 
           <article class="project-card">
-            <p class="project-type">Tool</p>
-            <h3>Project Two</h3>
+            <p class="project-type">Scientific tooling</p>
+            <h3>Bioinformatics Utilities</h3>
             <p>
-              Describe the problem, your role, and the result. Keep it concrete:
-              features, stack, and impact.
+              Tools and scripts built to process biological data, reduce manual work,
+              and make analysis workflows easier to reproduce and inspect.
             </p>
-            <a href="#" aria-label="Open Project Two">Project link</a>
+            <a href="https://github.com/SirTaxu">Browse GitHub</a>
           </article>
 
           <article class="project-card">
-            <p class="project-type">Experiment</p>
-            <h3>Project Three</h3>
+            <p class="project-type">Automation</p>
+            <h3>Bots & Workflow Scripts</h3>
             <p>
-              Use this space for a prototype, game, school project, open-source
-              contribution, or case study.
+              Automation projects focused on optimization: detecting state, making
+              decisions, running loops, and turning tedious tasks into repeatable flows.
             </p>
-            <a href="#" aria-label="Open Project Three">Project link</a>
+            <a href="https://github.com/SirTaxu">Browse GitHub</a>
           </article>
         </div>
       </section>
@@ -88,39 +134,46 @@
       <section class="section split" id="about" aria-labelledby="about-title">
         <div class="section-heading">
           <p class="eyebrow">About</p>
-          <h2 id="about-title">What I’m building toward</h2>
+          <h2 id="about-title">I like systems with rules, feedback, and hidden complexity.</h2>
         </div>
         <div class="about-copy">
           <p>
-            Write a few sentences about what you enjoy building, what you are
-            learning, and what kind of work you want to do next.
+            My work sits between games, scientific programming, and automation.
+            I enjoy understanding how a system behaves, finding the patterns inside it,
+            and building tools that make the next decision easier.
+          </p>
+          <p>
+            This portfolio will grow into a collection of prototypes, scripts,
+            utilities, design notes, and technical writeups.
           </p>
           <ul class="skill-list" aria-label="Skills">
-            <li>HTML</li>
-            <li>CSS</li>
-            <li>JavaScript</li>
-            <li>GitHub Pages</li>
+            <li>Game Design</li>
+            <li>Unity</li>
+            <li>C#</li>
+            <li>Python</li>
+            <li>Bioinformatics</li>
+            <li>Automation</li>
+            <li>Bot Design</li>
+            <li>Data Workflows</li>
           </ul>
         </div>
       </section>
 
       <section class="section contact" id="contact" aria-labelledby="contact-title">
         <p class="eyebrow">Contact</p>
-        <h2 id="contact-title">Let’s connect.</h2>
+        <h2 id="contact-title">Open to projects, collaborations, and good technical problems.</h2>
         <p>
-          Add the best links for future collaborators, recruiters, classmates,
-          or friends to reach you.
+          The best place to start is GitHub. More contact links can be added here
+          as the portfolio becomes more public-facing.
         </p>
         <div class="link-row">
-          <a href="mailto:you@example.com">Email</a>
-            <a href="https://github.com/SirTaxu">GitHub</a>
-          <a href="https://www.linkedin.com/in/your-username">LinkedIn</a>
+          <a href="https://github.com/SirTaxu">GitHub</a>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>© 2026 SirTaxu. Built with GitHub Pages.</p>
+      <p>Copyright 2026 SirTaxu. Built with GitHub Pages.</p>
     </footer>
   </body>
 </html>
