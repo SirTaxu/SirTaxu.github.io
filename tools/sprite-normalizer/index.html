@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cortá y normalizá sprite sheets sin perder la alineación entre frames.">
+  <meta name="theme-color" content="#111522">
+  <title>Sprite Sheet Normalizer · SirTaxu</title>
+  <link rel="canonical" href="https://sirtaxu.github.io/tools/sprite-normalizer/">
+  <script src="../../assets/js/site.js" defer></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111522;
+      --panel: #1b2232;
+      --panel-2: #222b3e;
+      --line: #34415a;
+      --text: #edf2ff;
+      --muted: #aab6cf;
+      --accent: #8ed5a7;
+      --accent-2: #69a9e6;
+      --warning: #f0bd69;
+      --error: #f08080;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 0%, #23304b 0, var(--bg) 42rem);
+      color: var(--text);
+      font: 14px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button, .file-button {
+      border: 1px solid #52627f;
+      border-radius: 8px;
+      background: #2b3750;
+      color: var(--text);
+      padding: 9px 13px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .05s;
+    }
+    button:hover, .file-button:hover { background: #354561; border-color: #7890b7; }
+    button:active, .file-button:active { transform: translateY(1px); }
+    button:disabled { opacity: .45; cursor: default; }
+    button.primary { background: #285846; border-color: #62aa88; }
+    button.primary:hover { background: #326d56; }
+    button.secondary { background: #244e72; border-color: #5b94c0; }
+    input, select {
+      width: 100%;
+      border: 1px solid #475875;
+      border-radius: 7px;
+      background: #121827;
+      color: var(--text);
+      padding: 8px 9px;
+    }
+    input:focus, select:focus { outline: 2px solid #4b7eac; outline-offset: 1px; }
+    input[type="range"] { padding: 0; }
+    code { color: #bde9cd; }
+
+    header {
+      padding: 24px clamp(18px, 4vw, 46px) 14px;
+      max-width: 1500px;
+      margin: auto;
+    }
+    .tool-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .brand-mark {
+      display: inline-grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07121a;
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .tool-nav-actions { display: flex; align-items: center; gap: 9px; }
+    .back-link {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      padding: 7px 10px;
+      text-decoration: none;
+    }
+    .back-link:hover { border-color: #7890b7; color: var(--text); }
+    .language-switch {
+      display: inline-flex;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #111827;
+    }
+    .language-switch button {
+      min-width: 38px;
+      border: 0;
+      padding: 5px 7px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .language-switch button[aria-pressed="true"] { background: var(--text); color: #0b1020; }
+    h1 { font-size: clamp(24px, 3vw, 34px); margin: 0 0 4px; letter-spacing: -.02em; }
+    header p { margin: 0; color: var(--muted); }
+    main {
+      max-width: 1500px;
+      margin: auto;
+      padding: 12px clamp(18px, 4vw, 46px) 34px;
+      display: grid;
+      grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+      gap: 16px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--panel) 95%, transparent);
+      box-shadow: 0 14px 36px #05081255;
+      overflow: hidden;
+    }
+    .panel-title {
+      margin: 0;
+      padding: 13px 16px;
+      font-size: 15px;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--line);
+    }
+    .normalization-title { margin: 3px -15px 0; }
+    .panel-body { padding: 15px; }
+    .controls { display: grid; gap: 13px; align-content: start; }
+    .drop-zone {
+      border: 2px dashed #536785;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      background: #10172688;
+    }
+    .drop-zone.drag { border-color: var(--accent); background: #183128; }
+    .drop-zone strong { display: block; color: var(--text); margin-bottom: 8px; }
+    .drop-zone input { display: none; }
+    .file-button { display: inline-block; margin-top: 9px; }
+    .grid-2, .grid-3 { display: grid; gap: 10px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    label { display: grid; gap: 5px; color: var(--muted); }
+    label span { font-size: 12px; }
+    .help { margin: 0; color: var(--muted); font-size: 12px; }
+    .help.warning { color: var(--warning); }
+    .status {
+      min-height: 42px;
+      border-radius: 8px;
+      background: #111827;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 10px;
+    }
+    .status.ok { border-color: #397c60; color: #a9e2bc; }
+    .status.error { border-color: #9e4f57; color: #ffc0c4; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .workspace { display: grid; gap: 16px; min-width: 0; }
+    .preview-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 16px; }
+    .canvas-wrap {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      padding: 14px;
+      overflow: auto;
+      background-color: #111827;
+      background-image:
+        linear-gradient(45deg, #1a2233 25%, transparent 25%),
+        linear-gradient(-45deg, #1a2233 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1a2233 75%),
+        linear-gradient(-45deg, transparent 75%, #1a2233 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    }
+    canvas { image-rendering: pixelated; max-width: 100%; }
+    #sheetCanvas { border: 1px solid #53627b; }
+    #animationCanvas { width: min(100%, 440px); height: 330px; }
+    .transport { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 8px; }
+    .transport button { padding: 7px 10px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(100px, 1fr)); gap: 9px; }
+    .metric { background: #121928; border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+    .metric span { display: block; color: var(--muted); font-size: 11px; }
+    .metric strong { display: block; margin-top: 3px; font-size: 16px; }
+    .frame-strip { display: flex; gap: 8px; overflow-x: auto; padding: 12px; background: #111827; }
+    .thumb {
+      flex: 0 0 auto;
+      width: 110px;
+      border: 1px solid var(--line);
+      background: #182033;
+      border-radius: 8px;
+      padding: 7px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .thumb.selected { border-color: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2) inset; color: var(--text); }
+    .thumb canvas { display: block; width: 94px; height: 94px; background: #101624; margin-bottom: 4px; }
+    .empty-state { color: var(--muted); text-align: center; padding: 30px; }
+    details { border-top: 1px solid var(--line); }
+    summary { cursor: pointer; color: var(--muted); padding: 11px 15px; }
+    .technical { padding: 0 15px 14px; color: var(--muted); font-size: 12px; }
+    .tool-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      max-width: 1500px;
+      margin: auto;
+      padding: 6px clamp(18px, 4vw, 46px) 28px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tool-footer a { color: var(--accent-2); }
+    @media (max-width: 1000px) {
+      main { grid-template-columns: 1fr; }
+      .preview-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .grid-3, .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .actions { grid-template-columns: 1fr; }
+      .tool-nav, .tool-footer { align-items: flex-start; flex-direction: column; }
+      .tool-nav-actions { width: 100%; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body
+  data-title-es="Normalizador de Sprite Sheets · SirTaxu"
+  data-title-en="Sprite Sheet Normalizer · SirTaxu"
+  data-description-es="Cortá y normalizá sprite sheets sin perder la alineación entre frames."
+  data-description-en="Split and normalize sprite sheets without losing alignment between frames."
+>
+  <header>
+    <nav class="tool-nav" aria-label="Navegación de la herramienta" data-aria-es="Navegación de la herramienta" data-aria-en="Tool navigation">
+      <a class="brand" href="../../index.html">
+        <span class="brand-mark" aria-hidden="true">ST</span>
+        <span>SirTaxu</span>
+      </a>
+      <div class="tool-nav-actions">
+        <a class="back-link" href="../../index.html" data-es="← Portfolio" data-en="← Portfolio">← Portfolio</a>
+        <div class="language-switch" role="group" aria-label="Idioma" data-aria-es="Idioma" data-aria-en="Language">
+          <button type="button" data-language="es" aria-pressed="true">ES</button>
+          <button type="button" data-language="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </nav>
+    <h1 data-es="Normalizador de Sprite Sheets" data-en="Sprite Sheet Normalizer">Normalizador de Sprite Sheets</h1>
+    <p data-es="Cortá una sprite sheet, eliminá transparencia redundante y conservá una alineación estable sin escalar los frames." data-en="Split a sprite sheet, remove redundant transparency, and preserve stable alignment without scaling the frames.">Cortá una sprite sheet, eliminá transparencia redundante y conservá una alineación estable sin escalar los frames.</p>
+  </header>
+
+  <main>
+    <section class="panel controls" aria-label="Configuración" data-aria-es="Configuración" data-aria-en="Settings">
+      <h2 class="panel-title" data-es="1. Sheet y cuadrícula" data-en="1. Sheet and grid">1. Sheet y cuadrícula</h2>
+      <div class="panel-body controls">
+        <div id="dropZone" class="drop-zone">
+          <strong data-es="Arrastrá una sprite sheet PNG aquí" data-en="Drop a PNG sprite sheet here">Arrastrá una sprite sheet PNG aquí</strong>
+          <span data-es="También podés elegirla manualmente." data-en="You can also choose it manually.">También podés elegirla manualmente.</span>
+          <label class="file-button"><span data-es="Abrir PNG" data-en="Open PNG">Abrir PNG</span><input id="fileInput" type="file" accept="image/png,image/*"></label>
+        </div>
+
+        <div class="grid-3">
+          <label><span data-es="Cantidad de frames" data-en="Frame count">Cantidad de frames</span><input id="frameCount" type="number" min="1" value="4"></label>
+          <label><span data-es="Columnas" data-en="Columns">Columnas</span><input id="columns" type="number" min="1" value="4"></label>
+          <label><span data-es="Filas" data-en="Rows">Filas</span><input id="rows" type="number" min="1" value="1"></label>
+        </div>
+
+        <div class="grid-2">
+          <label><span data-es="Margen X" data-en="X margin">Margen X</span><input id="marginX" type="number" min="0" value="0"></label>
+          <label><span data-es="Margen Y" data-en="Y margin">Margen Y</span><input id="marginY" type="number" min="0" value="0"></label>
+          <label><span data-es="Separación X" data-en="X spacing">Separación X</span><input id="spacingX" type="number" min="0" value="0"></label>
+          <label><span data-es="Separación Y" data-en="Y spacing">Separación Y</span><input id="spacingY" type="number" min="0" value="0"></label>
+        </div>
+
+        <h2 class="panel-title normalization-title" data-es="2. Normalización" data-en="2. Normalization">2. Normalización</h2>
+
+        <label>
+          <span data-es="Método de alineación" data-en="Alignment method">Método de alineación</span>
+          <select id="alignMode">
+            <option value="preserve" data-es="Conservar alineación de la celda (recomendado)" data-en="Preserve cell alignment (recommended)">Conservar alineación de la celda (recomendado)</option>
+            <option value="content" data-es="Realinear cada contenido por bottom-center" data-en="Realign each visible area by bottom-center">Realinear cada contenido por bottom-center</option>
+          </select>
+        </label>
+        <p id="modeHelp" class="help">Recorta la unión común de todos los contenidos. Conserva exactamente los desplazamientos existentes dentro de cada celda.</p>
+
+        <div class="grid-2">
+          <label><span data-es="Umbral alfa (0–255)" data-en="Alpha threshold (0–255)">Umbral alfa (0–255)</span><input id="alphaThreshold" type="number" min="0" max="255" value="0"></label>
+          <label><span data-es="Padding final (px)" data-en="Final padding (px)">Padding final (px)</span><input id="padding" type="number" min="0" max="128" value="2"></label>
+        </div>
+
+        <label><span data-es="Prefijo de archivos" data-en="File prefix">Prefijo de archivos</span><input id="prefix" type="text" value="Enemy_Run"></label>
+        <div id="status" class="status">Cargá una sheet para comenzar.</div>
+
+        <div class="actions">
+          <button id="exportZip" class="primary" type="button" disabled data-es="Exportar ZIP" data-en="Export ZIP">Exportar ZIP</button>
+          <button id="exportFolder" class="secondary" type="button" disabled data-es="Exportar a carpeta" data-en="Export to folder">Exportar a carpeta</button>
+          <button id="exportCurrent" type="button" disabled data-es="Guardar frame actual" data-en="Save current frame">Guardar frame actual</button>
+          <button id="exportReport" type="button" disabled data-es="Guardar informe JSON" data-en="Save JSON report">Guardar informe JSON</button>
+        </div>
+        <p class="help" data-es="El ZIP funciona sin dependencias ni conexión. “Exportar a carpeta” requiere un navegador Chromium compatible." data-en="ZIP export works offline with no dependencies. “Export to folder” requires a compatible Chromium browser.">El ZIP funciona sin dependencias ni conexión. “Exportar a carpeta” requiere un navegador Chromium compatible.</p>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="preview-grid">
+        <section class="panel">
+          <h2 class="panel-title" data-es="Sheet original y cuadrícula detectada" data-en="Original sheet and detected grid">Sheet original y cuadrícula detectada</h2>
+          <div class="canvas-wrap"><canvas id="sheetCanvas" width="600" height="260"></canvas></div>
+        </section>
+
+        <section class="panel">
+          <h2 class="panel-title" data-es="Animación normalizada" data-en="Normalized animation">Animación normalizada</h2>
+          <div class="canvas-wrap"><canvas id="animationCanvas" width="440" height="330"></canvas></div>
+          <div class="panel-body transport">
+            <button id="prevFrame" type="button" disabled title="Frame anterior" data-title-es="Frame anterior" data-title-en="Previous frame">◀</button>
+            <button id="playPause" type="button" disabled title="Reproducir o pausar" data-title-es="Reproducir o pausar" data-title-en="Play or pause">Pausa</button>
+            <input id="fps" type="range" min="1" max="30" value="10" aria-label="FPS">
+            <span><strong id="fpsValue">10</strong> FPS</span>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <h2 class="panel-title" data-es="Resultado" data-en="Result">Resultado</h2>
+        <div id="metrics" class="panel-body metrics">
+          <div class="metric"><span data-es="Celda original" data-en="Original cell">Celda original</span><strong>—</strong></div>
+          <div class="metric"><span data-es="Lienzo final común" data-en="Shared output canvas">Lienzo final común</span><strong>—</strong></div>
+          <div class="metric"><span data-es="Reducción de área" data-en="Area reduction">Reducción de área</span><strong>—</strong></div>
+          <div class="metric"><span data-es="Frame visible" data-en="Visible frame">Frame visible</span><strong>—</strong></div>
+        </div>
+        <div id="frameStrip" class="frame-strip"><div class="empty-state">Los frames normalizados aparecerán aquí.</div></div>
+        <details>
+          <summary data-es="Qué garantiza la herramienta" data-en="What the tool guarantees">Qué garantiza la herramienta</summary>
+          <div class="technical" data-es="Todos los archivos resultantes usan el mismo ancho y alto. Solo se copian píxeles; no se redimensiona ni interpola el asset. El modo recomendado conserva las coordenadas relativas que cada pose ya tenía dentro de su celda. El informe JSON registra cuadrícula, bounding boxes y posiciones de salida para poder auditar el proceso." data-en="Every output file uses the same width and height. Pixels are only copied; the asset is never resized or interpolated. The recommended mode preserves each pose’s existing relative coordinates inside its cell. The JSON report records the grid, bounding boxes, and output positions so the process can be audited.">
+            Todos los archivos resultantes usan el mismo ancho y alto. Solo se copian píxeles; no se redimensiona ni interpola el asset. El modo recomendado conserva las coordenadas relativas que cada pose ya tenía dentro de su celda. El informe JSON registra cuadrícula, bounding boxes y posiciones de salida para poder auditar el proceso.
+          </div>
+        </details>
+      </section>
+    </section>
+  </main>
+
+  <footer class="tool-footer">
+    <span data-es="Procesamiento 100% local: ninguna imagen se envía fuera del navegador." data-en="100% local processing: no image is sent outside your browser.">Procesamiento 100% local: ninguna imagen se envía fuera del navegador.</span>
+    <a href="../../index.html" data-es="Volver a SirTaxu.github.io" data-en="Back to SirTaxu.github.io">Volver a SirTaxu.github.io</a>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const $ = id => document.getElementById(id);
+    const ids = ["frameCount", "columns", "rows", "marginX", "marginY", "spacingX", "spacingY", "alignMode", "alphaThreshold", "padding", "prefix"];
+    const settings = Object.fromEntries(ids.map(id => [id, $(id)]));
+    const sheetCanvas = $("sheetCanvas");
+    const sheetCtx = sheetCanvas.getContext("2d");
+    const animationCanvas = $("animationCanvas");
+    const animationCtx = animationCanvas.getContext("2d");
+
+    const copy = {
+      es: {
+        start: "Cargá una sheet para comenzar.",
+        invalidImage: "El archivo seleccionado no parece ser una imagen.",
+        imageOpenError: "No fue posible abrir la imagen.",
+        notEnoughCells: "La cuadrícula no tiene suficientes celdas para la cantidad de frames.",
+        integerCells: "Los márgenes y separaciones no producen celdas de píxeles enteros. Revisá la cuadrícula.",
+        emptyFrame: "El frame {index} está vacío con el umbral alfa actual.",
+        ready: "{count} frames listos · {cellWidth}×{cellHeight} → {width}×{height} px",
+        loadSheet: "Cargá una sheet",
+        noAnimation: "Sin animación",
+        frameLine: "Frame {index} · {file}",
+        frameCaption: "Frame {index} · {width}×{height}",
+        framesHere: "Los frames normalizados aparecerán aquí.",
+        modePreserve: "Recorta la unión común de todos los contenidos. Conserva exactamente los desplazamientos existentes dentro de cada celda.",
+        modeContent: "Alinea cada bounding box visible por su centro inferior. Usalo solo si la sheet original presenta saltos o desalineación.",
+        notePreserve: "Se conservaron las posiciones relativas de las celdas de origen.",
+        noteContent: "El contenido visible se alineó de forma independiente por bottom-center.",
+        pngEncodeError: "No se pudo codificar el PNG.",
+        preparing: "Preparando PNG e informe…",
+        zipDone: "ZIP exportado con {count} PNG y el informe JSON.",
+        folderUnsupported: "Este navegador no permite elegir una carpeta. Usá “Exportar ZIP”.",
+        folderDone: "{count} archivos guardados en la carpeta seleccionada.",
+        exportFailed: "No se pudo exportar: {error}",
+        pause: "Pausa",
+        play: "Reproducir"
+      },
+      en: {
+        start: "Load a sheet to begin.",
+        invalidImage: "The selected file does not appear to be an image.",
+        imageOpenError: "The image could not be opened.",
+        notEnoughCells: "The grid does not have enough cells for the selected frame count.",
+        integerCells: "The margins and spacing do not produce whole-pixel cells. Check the grid.",
+        emptyFrame: "Frame {index} is empty with the current alpha threshold.",
+        ready: "{count} frames ready · {cellWidth}×{cellHeight} → {width}×{height} px",
+        loadSheet: "Load a sheet",
+        noAnimation: "No animation",
+        frameLine: "Frame {index} · {file}",
+        frameCaption: "Frame {index} · {width}×{height}",
+        framesHere: "Normalized frames will appear here.",
+        modePreserve: "Crops the shared union of all visible content while preserving the existing offsets inside each cell.",
+        modeContent: "Aligns each visible bounding box by bottom-center. Use this only when the original sheet contains jumps or misalignment.",
+        notePreserve: "Relative positions from the source cells were preserved.",
+        noteContent: "Visible content was aligned independently by bottom-center.",
+        pngEncodeError: "The PNG could not be encoded.",
+        preparing: "Preparing PNG files and report…",
+        zipDone: "ZIP exported with {count} PNG files and the JSON report.",
+        folderUnsupported: "This browser cannot select a folder. Use “Export ZIP” instead.",
+        folderDone: "{count} files saved to the selected folder.",
+        exportFailed: "Export failed: {error}",
+        pause: "Pause",
+        play: "Play"
+      }
+    };
+
+    function currentLanguage() {
+      return document.documentElement.lang === "en" ? "en" : "es";
+    }
+
+    function t(key, values = {}) {
+      const template = copy[currentLanguage()][key] || copy.es[key] || key;
+      return template.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? `{${name}}`);
+    }
+
+    const state = {
+      image: null,
+      fileName: "",
+      sourceUrl: "",
+      frames: [],
+      grid: null,
+      output: null,
+      currentFrame: 0,
+      playing: true,
+      lastTick: 0,
+      error: ""
+    };
+
+    function intValue(input, fallback = 0) {
+      const value = Number.parseInt(input.value, 10);
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    function safePrefix() {
+      const cleaned = settings.prefix.value.trim().replace(/[<>:"/\\|?*\x00-\x1F]/g, "_").replace(/[. ]+$/g, "");
+      return cleaned || "Frame";
+    }
+
+    function frameFileName(index) {
+      const digits = Math.max(2, String(Math.max(0, state.frames.length - 1)).length);
+      return `${safePrefix()}_${String(index).padStart(digits, "0")}.png`;
+    }
+
+    function setStatus(message, kind = "") {
+      const status = $("status");
+      status.textContent = message;
+      status.className = `status ${kind}`.trim();
+    }
+
+    function setEnabled(enabled) {
+      ["exportZip", "exportFolder", "exportCurrent", "exportReport", "prevFrame", "playPause"].forEach(id => $(id).disabled = !enabled);
+    }
+
+    function cleanBaseName(name) {
+      return name.replace(/\.[^.]+$/, "").replace(/\s*\(\d+\)$/, "").trim() || "Enemy_Animation";
+    }
+
+    async function loadFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setStatus(t("invalidImage"), "error");
+        return;
+      }
+      if (state.sourceUrl) URL.revokeObjectURL(state.sourceUrl);
+      state.sourceUrl = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => {
+        state.image = image;
+        state.fileName = file.name;
+        settings.prefix.value = cleanBaseName(file.name);
+        inferSimpleGrid(image);
+        rebuild();
+      };
+      image.onerror = () => setStatus(t("imageOpenError"), "error");
+      image.src = state.sourceUrl;
+    }
+
+    function inferSimpleGrid(image) {
+      const count = Math.max(1, intValue(settings.frameCount, 1));
+      if (image.width % count === 0) {
+        settings.columns.value = count;
+        settings.rows.value = 1;
+      }
+    }
+
+    function readGrid() {
+      if (!state.image) throw new Error(t("start"));
+      const count = Math.max(1, intValue(settings.frameCount, 1));
+      const columns = Math.max(1, intValue(settings.columns, count));
+      const rows = Math.max(1, intValue(settings.rows, Math.ceil(count / columns)));
+      const marginX = Math.max(0, intValue(settings.marginX));
+      const marginY = Math.max(0, intValue(settings.marginY));
+      const spacingX = Math.max(0, intValue(settings.spacingX));
+      const spacingY = Math.max(0, intValue(settings.spacingY));
+      if (count > columns * rows) throw new Error(t("notEnoughCells"));
+
+      const usableWidth = state.image.width - marginX * 2 - spacingX * (columns - 1);
+      const usableHeight = state.image.height - marginY * 2 - spacingY * (rows - 1);
+      const cellWidth = usableWidth / columns;
+      const cellHeight = usableHeight / rows;
+      if (cellWidth <= 0 || cellHeight <= 0 || !Number.isInteger(cellWidth) || !Number.isInteger(cellHeight)) {
+        throw new Error(t("integerCells"));
+      }
+      return { count, columns, rows, marginX, marginY, spacingX, spacingY, cellWidth, cellHeight };
+    }
+
+    function sourceCanvasForCell(grid, index) {
+      const column = index % grid.columns;
+      const row = Math.floor(index / grid.columns);
+      const sourceX = grid.marginX + column * (grid.cellWidth + grid.spacingX);
+      const sourceY = grid.marginY + row * (grid.cellHeight + grid.spacingY);
+      const canvas = document.createElement("canvas");
+      canvas.width = grid.cellWidth;
+      canvas.height = grid.cellHeight;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      context.imageSmoothingEnabled = false;
+      context.drawImage(state.image, sourceX, sourceY, grid.cellWidth, grid.cellHeight, 0, 0, grid.cellWidth, grid.cellHeight);
+      return { canvas, context, sourceX, sourceY, column, row };
+    }
+
+    function findBounds(context, width, height, threshold) {
+      const pixels = context.getImageData(0, 0, width, height).data;
+      let minX = width, minY = height, maxX = -1, maxY = -1;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (pixels[(y * width + x) * 4 + 3] > threshold) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      return maxX < minX ? null : { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1, right: maxX + 1, bottom: maxY + 1 };
+    }
+
+    function buildFrames() {
+      const grid = readGrid();
+      const threshold = Math.min(255, Math.max(0, intValue(settings.alphaThreshold)));
+      const padding = Math.max(0, intValue(settings.padding));
+      const rawFrames = [];
+
+      for (let index = 0; index < grid.count; index++) {
+        const source = sourceCanvasForCell(grid, index);
+        const bounds = findBounds(source.context, grid.cellWidth, grid.cellHeight, threshold);
+        if (!bounds) throw new Error(t("emptyFrame", { index }));
+        rawFrames.push({ index, ...source, bounds });
+      }
+
+      const mode = settings.alignMode.value;
+      let outputWidth, outputHeight, union = null;
+
+      if (mode === "preserve") {
+        union = {
+          x: Math.min(...rawFrames.map(frame => frame.bounds.x)),
+          y: Math.min(...rawFrames.map(frame => frame.bounds.y)),
+          right: Math.max(...rawFrames.map(frame => frame.bounds.right)),
+          bottom: Math.max(...rawFrames.map(frame => frame.bounds.bottom))
+        };
+        union.width = union.right - union.x;
+        union.height = union.bottom - union.y;
+        outputWidth = union.width + padding * 2;
+        outputHeight = union.height + padding * 2;
+      } else {
+        outputWidth = Math.max(...rawFrames.map(frame => frame.bounds.width)) + padding * 2;
+        outputHeight = Math.max(...rawFrames.map(frame => frame.bounds.height)) + padding * 2;
+      }
+
+      const frames = rawFrames.map(frame => {
+        const canvas = document.createElement("canvas");
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
+        const context = canvas.getContext("2d");
+        context.imageSmoothingEnabled = false;
+        let destinationX, destinationY;
+
+        if (mode === "preserve") {
+          destinationX = padding + frame.bounds.x - union.x;
+          destinationY = padding + frame.bounds.y - union.y;
+        } else {
+          destinationX = padding + Math.floor((outputWidth - padding * 2 - frame.bounds.width) / 2);
+          destinationY = outputHeight - padding - frame.bounds.height;
+        }
+
+        context.drawImage(
+          frame.canvas,
+          frame.bounds.x, frame.bounds.y, frame.bounds.width, frame.bounds.height,
+          destinationX, destinationY, frame.bounds.width, frame.bounds.height
+        );
+        return { ...frame, canvas, destinationX, destinationY };
+      });
+
+      const pivot = mode === "preserve"
+        ? { x: padding + Math.floor(grid.cellWidth / 2) - union.x, y: padding + union.bottom - union.y }
+        : { x: Math.floor(outputWidth / 2), y: outputHeight - padding };
+
+      return { grid, frames, output: { width: outputWidth, height: outputHeight, padding, threshold, mode, union, pivot } };
+    }
+
+    function rebuild() {
+      if (!state.image) {
+        drawEmptyPreviews();
+        return;
+      }
+      try {
+        const result = buildFrames();
+        state.grid = result.grid;
+        state.frames = result.frames;
+        state.output = result.output;
+        state.currentFrame = Math.min(state.currentFrame, state.frames.length - 1);
+        state.error = "";
+        setEnabled(true);
+        setStatus(t("ready", {
+          count: state.frames.length,
+          cellWidth: state.grid.cellWidth,
+          cellHeight: state.grid.cellHeight,
+          width: state.output.width,
+          height: state.output.height
+        }), "ok");
+        drawSheet();
+        renderAnimation();
+        renderMetrics();
+        renderThumbnails();
+      } catch (error) {
+        state.frames = [];
+        state.output = null;
+        state.error = error.message;
+        setEnabled(false);
+        setStatus(error.message, "error");
+        drawSheet();
+        renderAnimation();
+        renderMetrics();
+        renderThumbnails();
+      }
+    }
+
+    function drawEmptyPreviews() {
+      for (const [canvas, context, text] of [[sheetCanvas, sheetCtx, t("loadSheet")], [animationCanvas, animationCtx, t("noAnimation")]]) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "#aab6cf";
+        context.font = "15px system-ui";
+        context.textAlign = "center";
+        context.fillText(text, canvas.width / 2, canvas.height / 2);
+      }
+    }
+
+    function drawSheet() {
+      sheetCtx.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+      if (!state.image) return drawEmptyPreviews();
+      const maxWidth = 880;
+      const maxHeight = 410;
+      const scale = Math.min(maxWidth / state.image.width, maxHeight / state.image.height, 1);
+      sheetCanvas.width = Math.max(1, Math.round(state.image.width * scale));
+      sheetCanvas.height = Math.max(1, Math.round(state.image.height * scale));
+      sheetCtx.imageSmoothingEnabled = false;
+      sheetCtx.drawImage(state.image, 0, 0, sheetCanvas.width, sheetCanvas.height);
+      if (!state.grid) return;
+      sheetCtx.lineWidth = Math.max(1, 2 * scale);
+      sheetCtx.font = `${Math.max(10, 13 * scale)}px system-ui`;
+      sheetCtx.textAlign = "left";
+      for (let index = 0; index < state.grid.count; index++) {
+        const column = index % state.grid.columns;
+        const row = Math.floor(index / state.grid.columns);
+        const x = (state.grid.marginX + column * (state.grid.cellWidth + state.grid.spacingX)) * scale;
+        const y = (state.grid.marginY + row * (state.grid.cellHeight + state.grid.spacingY)) * scale;
+        sheetCtx.strokeStyle = index === state.currentFrame ? "#8ed5a7" : "#69a9e6";
+        sheetCtx.strokeRect(x + .5, y + .5, state.grid.cellWidth * scale - 1, state.grid.cellHeight * scale - 1);
+        sheetCtx.fillStyle = "#0b1020cc";
+        sheetCtx.fillRect(x + 4, y + 4, 29, 19);
+        sheetCtx.fillStyle = "#ffffff";
+        sheetCtx.fillText(String(index), x + 10, y + 18);
+      }
+    }
+
+    function renderAnimation() {
+      const ctx = animationCtx;
+      const w = animationCanvas.width;
+      const h = animationCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#aab6cf";
+      ctx.textAlign = "center";
+      if (!state.frames.length) {
+        ctx.font = "15px system-ui";
+        ctx.fillText(state.error || t("noAnimation"), w / 2, h / 2);
+        return;
+      }
+      const frame = state.frames[state.currentFrame];
+      const availableW = w - 56;
+      const availableH = h - 70;
+      const integerScale = Math.max(1, Math.min(8, Math.floor(Math.min(availableW / frame.canvas.width, availableH / frame.canvas.height))));
+      const drawW = frame.canvas.width * integerScale;
+      const drawH = frame.canvas.height * integerScale;
+      const x = Math.floor((w - drawW) / 2);
+      const y = Math.floor((h - drawH) / 2);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(frame.canvas, x, y, drawW, drawH);
+
+      const pivot = state.output.pivot;
+      const pivotX = x + pivot.x * integerScale;
+      const pivotY = y + Math.min(pivot.y, state.output.height) * integerScale;
+      ctx.strokeStyle = "#8ed5a788";
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(Math.max(8, x - 18), pivotY + .5);
+      ctx.lineTo(Math.min(w - 8, x + drawW + 18), pivotY + .5);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      if (pivot.x >= 0 && pivot.x <= state.output.width && pivot.y >= 0 && pivot.y <= state.output.height) {
+        ctx.fillStyle = "#f0bd69";
+        ctx.beginPath();
+        ctx.arc(pivotX, pivotY, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = "#dbe5fa";
+      ctx.font = "13px system-ui";
+      ctx.fillText(t("frameLine", { index: state.currentFrame, file: frameFileName(state.currentFrame) }), w / 2, h - 15);
+    }
+
+    function renderMetrics() {
+      const values = state.frames.length ? (() => {
+        const cellArea = state.grid.cellWidth * state.grid.cellHeight;
+        const outputArea = state.output.width * state.output.height;
+        const reduction = Math.max(0, (1 - outputArea / cellArea) * 100);
+        const current = state.frames[state.currentFrame];
+        return [
+          `${state.grid.cellWidth} × ${state.grid.cellHeight}`,
+          `${state.output.width} × ${state.output.height}`,
+          `${reduction.toFixed(1)} %`,
+          `${current.bounds.width} × ${current.bounds.height}`
+        ];
+      })() : ["—", "—", "—", "—"];
+      [...$("metrics").querySelectorAll("strong")].forEach((node, index) => node.textContent = values[index]);
+    }
+
+    function renderThumbnails() {
+      const strip = $("frameStrip");
+      strip.replaceChildren();
+      if (!state.frames.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = t("framesHere");
+        strip.appendChild(empty);
+        return;
+      }
+      state.frames.forEach((frame, index) => {
+        const button = document.createElement("button");
+        button.className = `thumb${index === state.currentFrame ? " selected" : ""}`;
+        button.type = "button";
+        const canvas = document.createElement("canvas");
+        canvas.width = 94;
+        canvas.height = 94;
+        const context = canvas.getContext("2d");
+        const scale = Math.max(1, Math.floor(Math.min(86 / frame.canvas.width, 86 / frame.canvas.height)));
+        const width = frame.canvas.width * scale;
+        const height = frame.canvas.height * scale;
+        context.imageSmoothingEnabled = false;
+        context.drawImage(frame.canvas, Math.floor((94 - width) / 2), Math.floor((94 - height) / 2), width, height);
+        const caption = document.createElement("span");
+        caption.textContent = t("frameCaption", { index, width: frame.bounds.width, height: frame.bounds.height });
+        button.append(canvas, caption);
+        button.addEventListener("click", () => selectFrame(index));
+        strip.appendChild(button);
+      });
+    }
+
+    function selectFrame(index) {
+      state.currentFrame = (index + state.frames.length) % state.frames.length;
+      drawSheet();
+      renderAnimation();
+      renderMetrics();
+      [...$("frameStrip").children].forEach((node, i) => node.classList.toggle("selected", i === state.currentFrame));
+    }
+
+    function reportObject() {
+      return {
+        tool: "Sprite Sheet Normalizer",
+        version: 1,
+        language: currentLanguage(),
+        source: { fileName: state.fileName, width: state.image.width, height: state.image.height },
+        grid: state.grid,
+        normalization: {
+          mode: state.output.mode,
+          alphaThreshold: state.output.threshold,
+          padding: state.output.padding,
+          outputWidth: state.output.width,
+          outputHeight: state.output.height,
+          pivot: state.output.pivot,
+          note: state.output.mode === "preserve" ? t("notePreserve") : t("noteContent")
+        },
+        frames: state.frames.map(frame => ({
+          index: frame.index,
+          fileName: frameFileName(frame.index),
+          sourceCell: { x: frame.sourceX, y: frame.sourceY, width: state.grid.cellWidth, height: state.grid.cellHeight },
+          visibleBoundsInCell: { x: frame.bounds.x, y: frame.bounds.y, width: frame.bounds.width, height: frame.bounds.height },
+          placementInOutput: { x: frame.destinationX, y: frame.destinationY }
+        }))
+      };
+    }
+
+    function canvasBlob(canvas) {
+      return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error(t("pngEncodeError"))), "image/png"));
+    }
+
+    function downloadBlob(blob, name) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    function crc32(bytes) {
+      let crc = 0xffffffff;
+      for (const byte of bytes) {
+        crc ^= byte;
+        for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+      }
+      return (crc ^ 0xffffffff) >>> 0;
+    }
+
+    function write16(view, offset, value) { view.setUint16(offset, value, true); }
+    function write32(view, offset, value) { view.setUint32(offset, value >>> 0, true); }
+
+    function dosDateTime(date = new Date()) {
+      const year = Math.max(1980, date.getFullYear());
+      return {
+        time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+        date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate()
+      };
+    }
+
+    function concatenate(parts) {
+      const total = parts.reduce((sum, part) => sum + part.length, 0);
+      const result = new Uint8Array(total);
+      let offset = 0;
+      for (const part of parts) { result.set(part, offset); offset += part.length; }
+      return result;
+    }
+
+    function makeStoredZip(entries) {
+      const encoder = new TextEncoder();
+      const localParts = [];
+      const centralParts = [];
+      const stamp = dosDateTime();
+      let localOffset = 0;
+
+      for (const entry of entries) {
+        const name = encoder.encode(entry.name);
+        const data = entry.data;
+        const crc = crc32(data);
+        const local = new Uint8Array(30 + name.length);
+        const lv = new DataView(local.buffer);
+        write32(lv, 0, 0x04034b50);
+        write16(lv, 4, 20);
+        write16(lv, 6, 0x0800);
+        write16(lv, 8, 0);
+        write16(lv, 10, stamp.time);
+        write16(lv, 12, stamp.date);
+        write32(lv, 14, crc);
+        write32(lv, 18, data.length);
+        write32(lv, 22, data.length);
+        write16(lv, 26, name.length);
+        write16(lv, 28, 0);
+        local.set(name, 30);
+        localParts.push(local, data);
+
+        const central = new Uint8Array(46 + name.length);
+        const cv = new DataView(central.buffer);
+        write32(cv, 0, 0x02014b50);
+        write16(cv, 4, 20);
+        write16(cv, 6, 20);
+        write16(cv, 8, 0x0800);
+        write16(cv, 10, 0);
+        write16(cv, 12, stamp.time);
+        write16(cv, 14, stamp.date);
+        write32(cv, 16, crc);
+        write32(cv, 20, data.length);
+        write32(cv, 24, data.length);
+        write16(cv, 28, name.length);
+        write16(cv, 30, 0);
+        write16(cv, 32, 0);
+        write16(cv, 34, 0);
+        write16(cv, 36, 0);
+        write32(cv, 38, 0);
+        write32(cv, 42, localOffset);
+        central.set(name, 46);
+        centralParts.push(central);
+        localOffset += local.length + data.length;
+      }
+
+      const centralDirectory = concatenate(centralParts);
+      const end = new Uint8Array(22);
+      const ev = new DataView(end.buffer);
+      write32(ev, 0, 0x06054b50);
+      write16(ev, 4, 0);
+      write16(ev, 6, 0);
+      write16(ev, 8, entries.length);
+      write16(ev, 10, entries.length);
+      write32(ev, 12, centralDirectory.length);
+      write32(ev, 16, localOffset);
+      write16(ev, 20, 0);
+      return new Blob([...localParts, centralDirectory, end], { type: "application/zip" });
+    }
+
+    async function buildExportEntries() {
+      const entries = [];
+      for (const frame of state.frames) {
+        const blob = await canvasBlob(frame.canvas);
+        entries.push({ name: frameFileName(frame.index), data: new Uint8Array(await blob.arrayBuffer()) });
+      }
+      const report = new TextEncoder().encode(JSON.stringify(reportObject(), null, 2));
+      entries.push({ name: `${safePrefix()}_normalization.json`, data: report });
+      return entries;
+    }
+
+    async function exportZip() {
+      try {
+        setStatus(t("preparing"));
+        const entries = await buildExportEntries();
+        downloadBlob(makeStoredZip(entries), `${safePrefix()}_frames.zip`);
+        setStatus(t("zipDone", { count: state.frames.length }), "ok");
+      } catch (error) { setStatus(error.message, "error"); }
+    }
+
+    async function exportFolder() {
+      if (!("showDirectoryPicker" in window)) {
+        setStatus(t("folderUnsupported"), "error");
+        return;
+      }
+      try {
+        const directory = await window.showDirectoryPicker({ mode: "readwrite" });
+        const entries = await buildExportEntries();
+        for (const entry of entries) {
+          const handle = await directory.getFileHandle(entry.name, { create: true });
+          const writable = await handle.createWritable();
+          await writable.write(entry.data);
+          await writable.close();
+        }
+        setStatus(t("folderDone", { count: entries.length }), "ok");
+      } catch (error) {
+        if (error.name !== "AbortError") setStatus(t("exportFailed", { error: error.message }), "error");
+      }
+    }
+
+    async function exportCurrent() {
+      const frame = state.frames[state.currentFrame];
+      if (!frame) return;
+      downloadBlob(await canvasBlob(frame.canvas), frameFileName(state.currentFrame));
+    }
+
+    function exportReport() {
+      downloadBlob(new Blob([JSON.stringify(reportObject(), null, 2)], { type: "application/json" }), `${safePrefix()}_normalization.json`);
+    }
+
+    function animationLoop(timestamp) {
+      if (state.playing && state.frames.length) {
+        const interval = 1000 / intValue($("fps"), 10);
+        if (timestamp - state.lastTick >= interval) {
+          state.lastTick = timestamp;
+          selectFrame(state.currentFrame + 1);
+        }
+      }
+      requestAnimationFrame(animationLoop);
+    }
+
+    $("fileInput").addEventListener("change", event => loadFile(event.target.files[0]));
+    $("dropZone").addEventListener("dragover", event => { event.preventDefault(); $("dropZone").classList.add("drag"); });
+    $("dropZone").addEventListener("dragleave", () => $("dropZone").classList.remove("drag"));
+    $("dropZone").addEventListener("drop", event => {
+      event.preventDefault();
+      $("dropZone").classList.remove("drag");
+      loadFile(event.dataTransfer.files[0]);
+    });
+    ids.forEach(id => settings[id].addEventListener(id === "prefix" ? "input" : "change", rebuild));
+    settings.alignMode.addEventListener("change", () => {
+      $("modeHelp").textContent = settings.alignMode.value === "preserve" ? t("modePreserve") : t("modeContent");
+    });
+    $("prevFrame").addEventListener("click", () => selectFrame(state.currentFrame - 1));
+    $("playPause").addEventListener("click", () => {
+      state.playing = !state.playing;
+      $("playPause").textContent = state.playing ? t("pause") : t("play");
+    });
+    $("fps").addEventListener("input", () => $("fpsValue").textContent = $("fps").value);
+    $("exportZip").addEventListener("click", exportZip);
+    $("exportFolder").addEventListener("click", exportFolder);
+    $("exportCurrent").addEventListener("click", exportCurrent);
+    $("exportReport").addEventListener("click", exportReport);
+    window.addEventListener("keydown", event => {
+      if (!state.frames.length || ["INPUT", "SELECT"].includes(document.activeElement.tagName)) return;
+      if (event.key === "ArrowLeft") selectFrame(state.currentFrame - 1);
+      if (event.key === "ArrowRight") selectFrame(state.currentFrame + 1);
+      if (event.key === " ") { event.preventDefault(); $("playPause").click(); }
+    });
+
+    document.addEventListener("site-language-change", () => {
+      $("modeHelp").textContent = settings.alignMode.value === "preserve" ? t("modePreserve") : t("modeContent");
+      $("playPause").textContent = state.playing ? t("pause") : t("play");
+      if (state.image) rebuild();
+      else {
+        setStatus(t("start"));
+        drawEmptyPreviews();
+        renderThumbnails();
+      }
+    });
+
+    $("modeHelp").textContent = t("modePreserve");
+    setStatus(t("start"));
+    drawEmptyPreviews();
+    requestAnimationFrame(animationLoop);
+  </script>
+</body>
+</html>

@@ -1,179 +1,168 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#070a12">
     <meta
       name="description"
-      content="SirTaxu portfolio: videogame design, software development, bioinformatics tools, bots, scripts, and automation."
-    />
-    <title>SirTaxu | Game Developer, Tool Builder, Automation Designer</title>
-    <link rel="stylesheet" href="styles.css" />
+      content="Portfolio de SirTaxu: desarrollo de videojuegos, herramientas de bioinformática y automatización."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SirTaxu | Game Developer &amp; Tool Builder">
+    <meta
+      property="og:description"
+      content="Videojuegos, herramientas científicas y automatización orientados a resolver sistemas complejos."
+    >
+    <title>SirTaxu | Game Developer &amp; Tool Builder</title>
+    <link rel="canonical" href="https://sirtaxu.github.io/">
+    <link rel="stylesheet" href="styles.css">
+    <script src="assets/js/site.js" defer></script>
   </head>
-  <body>
+  <body
+    data-title-es="SirTaxu | Desarrollo de videojuegos y herramientas"
+    data-title-en="SirTaxu | Game Developer & Tool Builder"
+    data-description-es="Portfolio de SirTaxu: desarrollo de videojuegos, herramientas de bioinformática y automatización."
+    data-description-en="SirTaxu's portfolio: game development, bioinformatics tools, and automation."
+  >
+    <a class="skip-link" href="#main" data-es="Saltar al contenido" data-en="Skip to content">Saltar al contenido</a>
+
     <header class="site-header">
-      <a class="logo" href="#top" aria-label="Home">ST</a>
-      <nav class="nav" aria-label="Primary navigation">
-        <a href="#focus">Focus</a>
-        <a href="#projects">Projects</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+      <a class="brand" href="#top" aria-label="SirTaxu — inicio">
+        <span class="brand-mark" aria-hidden="true">ST</span>
+        <span class="brand-name">SirTaxu</span>
+      </a>
+
+      <nav class="nav" aria-label="Navegación principal" data-aria-es="Navegación principal" data-aria-en="Primary navigation">
+        <a href="#apps">Apps</a>
+        <a href="#tools" data-es="Herramientas" data-en="Tools">Herramientas</a>
+        <a href="#games" data-es="Juegos" data-en="Games">Juegos</a>
       </nav>
+
+      <div class="language-switch" role="group" aria-label="Idioma" data-aria-es="Idioma" data-aria-en="Language">
+        <button type="button" data-language="es" aria-pressed="true">ES</button>
+        <button type="button" data-language="en" aria-pressed="false">EN</button>
+      </div>
     </header>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Game systems / Bioinformatics tools / Automation</p>
-          <h1 id="hero-title">SirTaxu builds systems that play, analyze, and optimize.</h1>
-          <p class="hero-text">
-            Videogame designer and developer, programmer of bioinformatics tools,
-            and creator of bots and scripts for repetitive, data-heavy, or game-adjacent
-            workflows.
+          <p class="eyebrow">Apps · Tools · Games</p>
+          <h1 id="hero-title" data-es="Construyo sistemas que juegan, analizan y optimizan." data-en="I build systems that play, analyze, and optimize.">
+            Construyo sistemas que juegan, analizan y optimizan.
+          </h1>
+          <p class="hero-text" data-es="Diseño y desarrollo videojuegos, creo software para flujos de bioinformática y automatizo procesos repetitivos o intensivos en datos." data-en="I design and develop games, build software for bioinformatics workflows, and automate repetitive or data-heavy processes.">
+            Diseño y desarrollo videojuegos, creo software para flujos de bioinformática y automatizo procesos repetitivos o intensivos en datos.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#projects">View work</a>
-            <a class="button secondary" href="https://github.com/SirTaxu">GitHub</a>
+            <a class="button primary" href="#tools" data-es="Explorar herramientas" data-en="Explore tools">Explorar herramientas</a>
+            <a class="button secondary" href="tools/sprite-normalizer/" data-es="Abrir Sprite Normalizer" data-en="Open Sprite Normalizer">Abrir Sprite Normalizer</a>
           </div>
         </div>
 
-        <aside class="console-panel" aria-label="Portfolio summary">
-          <div class="console-bar">
-            <span></span>
-            <span></span>
-            <span></span>
+        <aside class="signal-panel" aria-label="Áreas de trabajo" data-aria-es="Áreas de trabajo" data-aria-en="Areas of work">
+          <div class="signal-topline">
+            <span data-es="Estado" data-en="Status">Estado</span>
+            <strong><i aria-hidden="true"></i><span data-es="Disponible para colaborar" data-en="Open to collaborate">Disponible para colaborar</span></strong>
           </div>
-          <pre><code>profile.load("SirTaxu")
-
-roles = [
-  "videogame designer",
-  "gameplay programmer",
-  "bioinformatics tool builder",
-  "automation script designer"
-]
-
-mode = "prototype, iterate, optimize"</code></pre>
+          <ol class="signal-list">
+            <li><span>01</span><div><strong>Apps</strong><small data-es="Productos y aplicaciones públicas" data-en="Public products and applications">Productos y aplicaciones públicas</small></div></li>
+            <li><span>02</span><div><strong>Tools</strong><small data-es="Utilidades listas para usar" data-en="Utilities ready to use">Utilidades listas para usar</small></div></li>
+            <li><span>03</span><div><strong>Games</strong><small data-es="Prototipos y experiencias jugables" data-en="Prototypes and playable experiences">Prototipos y experiencias jugables</small></div></li>
+          </ol>
         </aside>
       </section>
 
-      <section class="section focus" id="focus" aria-labelledby="focus-title">
-        <div class="section-heading">
-          <p class="eyebrow">Core focus</p>
-          <h2 id="focus-title">Three areas, one way of thinking.</h2>
-        </div>
-
-        <div class="focus-grid">
-          <article class="focus-card">
-            <span class="card-index">01</span>
-            <h3>Videogame Design & Development</h3>
-            <p>
-              Systems-first design, gameplay prototypes, mechanics, progression,
-              balancing, and tools that make iteration faster.
-            </p>
-          </article>
-
-          <article class="focus-card">
-            <span class="card-index">02</span>
-            <h3>Bioinformatics Tools</h3>
-            <p>
-              Practical software for biological data workflows: parsing, analysis,
-              repeatable pipelines, visualization, and quality-of-life utilities.
-            </p>
-          </article>
-
-          <article class="focus-card">
-            <span class="card-index">03</span>
-            <h3>Bots, Scripts & Automation</h3>
-            <p>
-              Task optimization for games, tools, and personal workflows through
-              careful scripting, state detection, and repeatable automation.
-            </p>
+      <section class="section division-section" id="apps" aria-labelledby="apps-title">
+        <div class="division-number" aria-hidden="true">01</div>
+        <div class="division-content">
+          <div class="section-heading">
+            <p class="eyebrow">Apps</p>
+            <h2 id="apps-title" data-es="Aplicaciones pensadas para resolver problemas reales." data-en="Applications designed to solve real problems.">Aplicaciones pensadas para resolver problemas reales.</h2>
+            <p data-es="Esta sección reunirá productos completos cuando estén listos para uso público, con una explicación clara de su propósito, plataforma y estado." data-en="This section will feature complete products once they are ready for public use, with a clear explanation of their purpose, platform, and status.">Esta sección reunirá productos completos cuando estén listos para uso público, con una explicación clara de su propósito, plataforma y estado.</p>
+          </div>
+          <article class="placeholder-card">
+            <span class="status-pill" data-es="Próximamente" data-en="Coming soon">Próximamente</span>
+            <h3 data-es="Aplicaciones en preparación" data-en="Applications in preparation">Aplicaciones en preparación</h3>
+            <p data-es="Los proyectos se publicarán aquí a medida que alcancen una versión estable y accesible para nuevos usuarios." data-en="Projects will be published here as they reach a stable release that is accessible to new users.">Los proyectos se publicarán aquí a medida que alcancen una versión estable y accesible para nuevos usuarios.</p>
           </article>
         </div>
       </section>
 
-      <section class="section" id="projects" aria-labelledby="projects-title">
-        <div class="section-heading">
-          <p class="eyebrow">Selected work</p>
-          <h2 id="projects-title">Projects to shape into case studies.</h2>
+      <section class="section tool-feature" id="tools" aria-labelledby="tools-title">
+        <div class="tool-copy">
+          <p class="eyebrow" data-es="02 · Herramienta destacada" data-en="02 · Featured tool">02 · Herramienta destacada</p>
+          <h2 id="tools-title">Sprite Sheet Normalizer</h2>
+          <p data-es="Corta una sprite sheet en frames, elimina transparencia redundante y conserva una alineación común sin escalar ni interpolar el pixel art." data-en="Split a sprite sheet into frames, remove redundant transparency, and preserve a shared alignment without scaling or interpolating the pixel art.">
+            Corta una sprite sheet en frames, elimina transparencia redundante y conserva una alineación común sin escalar ni interpolar el pixel art.
+          </p>
+          <ul class="check-list">
+            <li data-es="Procesamiento local: tus imágenes no salen del navegador." data-en="Local processing: your images never leave the browser.">Procesamiento local: tus imágenes no salen del navegador.</li>
+            <li data-es="Vista previa animada y comparación de dimensiones." data-en="Animated preview and dimension comparison.">Vista previa animada y comparación de dimensiones.</li>
+            <li data-es="Exportación a PNG, ZIP e informe JSON auditable." data-en="PNG, ZIP, and auditable JSON report exports.">Exportación a PNG, ZIP e informe JSON auditable.</li>
+          </ul>
+          <a class="button primary" href="tools/sprite-normalizer/" data-es="Usar la herramienta" data-en="Use the tool">Usar la herramienta</a>
         </div>
 
-        <div class="project-grid">
-          <article class="project-card">
-            <p class="project-type">Game development</p>
-            <h3>Game Systems & Prototypes</h3>
-            <p>
-              A space for playable prototypes, mechanics experiments, level systems,
-              Unity tools, design documents, and gameplay programming work.
-            </p>
-            <a href="https://github.com/SirTaxu">Browse GitHub</a>
-          </article>
+        <div class="tool-visual" aria-hidden="true">
+          <div class="window-bar"><span></span><span></span><span></span><small>sprite-normalizer</small></div>
+          <div class="sprite-demo">
+            <div class="source-cells"><i></i><i></i><i></i><i></i></div>
+            <div class="flow-arrow">→</div>
+            <div class="normalized-cells"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="demo-metrics"><span>256×256</span><strong>−72%</strong><span>86×132</span></div>
+        </div>
+      </section>
 
-          <article class="project-card">
-            <p class="project-type">Scientific tooling</p>
-            <h3>Bioinformatics Utilities</h3>
-            <p>
-              Tools and scripts built to process biological data, reduce manual work,
-              and make analysis workflows easier to reproduce and inspect.
-            </p>
-            <a href="https://github.com/SirTaxu">Browse GitHub</a>
-          </article>
-
-          <article class="project-card">
-            <p class="project-type">Automation</p>
-            <h3>Bots & Workflow Scripts</h3>
-            <p>
-              Automation projects focused on optimization: detecting state, making
-              decisions, running loops, and turning tedious tasks into repeatable flows.
-            </p>
-            <a href="https://github.com/SirTaxu">Browse GitHub</a>
+      <section class="section division-section games-section" id="games" aria-labelledby="games-title">
+        <div class="division-number" aria-hidden="true">03</div>
+        <div class="division-content">
+          <div class="section-heading">
+            <p class="eyebrow">Games</p>
+            <h2 id="games-title" data-es="Prototipos jugables y experimentos de diseño." data-en="Playable prototypes and design experiments.">Prototipos jugables y experimentos de diseño.</h2>
+            <p data-es="Este espacio alojará builds web, notas de desarrollo y casos de estudio sobre mecánicas, niveles y sistemas de progresión." data-en="This space will host web builds, development notes, and case studies about mechanics, levels, and progression systems.">Este espacio alojará builds web, notas de desarrollo y casos de estudio sobre mecánicas, niveles y sistemas de progresión.</p>
+          </div>
+          <article class="placeholder-card game-placeholder">
+            <span class="status-pill" data-es="Primer prototipo en preparación" data-en="First prototype in preparation">Primer prototipo en preparación</span>
+            <div class="prototype-window" aria-hidden="true"><span>PLAY</span></div>
+            <h3 data-es="Próxima experiencia jugable" data-en="Next playable experience">Próxima experiencia jugable</h3>
+            <p data-es="La primera build aparecerá aquí cuando esté lista para pruebas públicas." data-en="The first build will appear here when it is ready for public testing.">La primera build aparecerá aquí cuando esté lista para pruebas públicas.</p>
           </article>
         </div>
       </section>
 
       <section class="section split" id="about" aria-labelledby="about-title">
         <div class="section-heading">
-          <p class="eyebrow">About</p>
-          <h2 id="about-title">I like systems with rules, feedback, and hidden complexity.</h2>
+          <p class="eyebrow" data-es="Perfil" data-en="About">Perfil</p>
+          <h2 id="about-title" data-es="Reglas, feedback y complejidad útil." data-en="Rules, feedback, and useful complexity.">Reglas, feedback y complejidad útil.</h2>
         </div>
         <div class="about-copy">
-          <p>
-            My work sits between games, scientific programming, and automation.
-            I enjoy understanding how a system behaves, finding the patterns inside it,
-            and building tools that make the next decision easier.
+          <p data-es="Mi trabajo se encuentra entre los videojuegos, la programación científica y la automatización. Disfruto entender cómo se comporta un sistema, encontrar sus patrones y construir la herramienta que hace más clara la próxima decisión." data-en="My work sits between games, scientific programming, and automation. I enjoy understanding how a system behaves, finding its patterns, and building the tool that makes the next decision clearer.">
+            Mi trabajo se encuentra entre los videojuegos, la programación científica y la automatización. Disfruto entender cómo se comporta un sistema, encontrar sus patrones y construir la herramienta que hace más clara la próxima decisión.
           </p>
-          <p>
-            This portfolio will grow into a collection of prototypes, scripts,
-            utilities, design notes, and technical writeups.
-          </p>
-          <ul class="skill-list" aria-label="Skills">
-            <li>Game Design</li>
-            <li>Unity</li>
-            <li>C#</li>
-            <li>Python</li>
-            <li>Bioinformatics</li>
-            <li>Automation</li>
-            <li>Bot Design</li>
-            <li>Data Workflows</li>
+          <ul class="skill-list">
+            <li>Game Design</li><li>Unity</li><li>C#</li><li>Python</li><li>Bioinformatics</li><li>Automation</li><li>Bot Design</li><li>Data Workflows</li>
           </ul>
         </div>
       </section>
 
       <section class="section contact" id="contact" aria-labelledby="contact-title">
-        <p class="eyebrow">Contact</p>
-        <h2 id="contact-title">Open to projects, collaborations, and good technical problems.</h2>
-        <p>
-          The best place to start is GitHub. More contact links can be added here
-          as the portfolio becomes more public-facing.
+        <p class="eyebrow" data-es="Contacto" data-en="Contact">Contacto</p>
+        <h2 id="contact-title" data-es="¿Tenés un sistema interesante para diseñar, analizar u optimizar?" data-en="Have an interesting system to design, analyze, or optimize?">
+          ¿Tenés un sistema interesante para diseñar, analizar u optimizar?
+        </h2>
+        <p data-es="GitHub es el mejor punto de partida para conocer mi trabajo y conversar sobre una posible colaboración." data-en="GitHub is the best starting point to explore my work and discuss a possible collaboration.">
+          GitHub es el mejor punto de partida para conocer mi trabajo y conversar sobre una posible colaboración.
         </p>
-        <div class="link-row">
-          <a href="https://github.com/SirTaxu">GitHub</a>
-        </div>
+        <a class="button primary" href="https://github.com/SirTaxu" data-es="Abrir GitHub" data-en="Open GitHub">Abrir GitHub</a>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>Copyright 2026 SirTaxu. Built with GitHub Pages.</p>
+      <p><span>© 2026 SirTaxu.</span> <span data-es="Construido con HTML, CSS y JavaScript; publicado con GitHub Pages." data-en="Built with HTML, CSS, and JavaScript; published with GitHub Pages.">Construido con HTML, CSS y JavaScript; publicado con GitHub Pages.</span></p>
+      <a href="#top" data-es="Volver arriba ↑" data-en="Back to top ↑">Volver arriba ↑</a>
     </footer>
   </body>
 </html>
